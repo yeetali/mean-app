@@ -5,14 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgIf } from '@angular/common';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  NgForm,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -38,6 +31,7 @@ export class LoginComponent {
 
   onLogin(loginForm: NgForm) {
     if (!loginForm.invalid) {
+      this.isLoading = true;
       this.authService.loginUser(
         loginForm.value.email,
         loginForm.value.password
