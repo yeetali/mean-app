@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -23,14 +23,21 @@ export class HeaderComponent {
   userAuthenticated = false;
   private authListener: Subscription;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
+    setTimeout(() => {
+      this.userAuthenticated = this.authService.getIsAuth();
+    });
     this.authListener = this.authService
       .getAuthStatusListener()
       .subscribe((isAuth) => {
         this.userAuthenticated = isAuth;
       });
+    this.cdr.detectChanges();
   }
 
   onLogout() {
