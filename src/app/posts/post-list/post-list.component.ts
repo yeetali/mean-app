@@ -34,6 +34,7 @@ export class PostListComponent {
   postsPerPage = 2;
   currentPage = 1;
   userAuthenticated = false;
+  userId: string;
   private authStatusSub: Subscription;
 
   constructor(
@@ -43,6 +44,7 @@ export class PostListComponent {
 
   ngOnInit() {
     this.isLoading = true;
+    this.userId = this.authService.getUserId();
     this.postSub = this.postsService
       .getPostUpdateListener()
       .subscribe((postData: { posts: Post[]; postCount: number }) => {
@@ -55,6 +57,7 @@ export class PostListComponent {
       .getAuthStatusListener()
       .subscribe((isAuth) => {
         this.userAuthenticated = isAuth;
+        this.userId = this.authService.getUserId();
       });
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
   }

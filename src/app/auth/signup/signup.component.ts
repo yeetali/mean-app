@@ -14,6 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -32,16 +33,29 @@ import { AuthService } from '../auth.service';
 })
 export class SignupComponent {
   isLoading = false;
+  private authStatusSub: Subscription;
+
+  ngOnInit(): void {
+    this.authStatusSub = this.authService
+      .getAuthStatusListener()
+      .subscribe((authStatus) => {
+        this.isLoading = false;
+      });
+  }
 
   constructor(public authService: AuthService) {}
 
   onSignUp(signupForm: NgForm) {
     if (!signupForm.invalid) {
-      this.isLoading = true
+      this.isLoading = true;
       this.authService.createUser(
         signupForm.value.email,
         signupForm.value.password
       );
     }
+  }
+
+  ngOnDestroy(): void {
+    this.authStatusSub.unsubscribe();
   }
 }

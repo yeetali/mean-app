@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgIf } from '@angular/common';
 import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -26,8 +27,17 @@ import { AuthService } from '../auth.service';
 })
 export class LoginComponent {
   isLoading = false;
+  authStatusSub: Subscription;
 
   constructor(public authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.authStatusSub = this.authService
+      .getAuthStatusListener()
+      .subscribe((authStatus) => {
+        this.isLoading = false;
+      });
+  }
 
   onLogin(loginForm: NgForm) {
     if (!loginForm.invalid) {
@@ -37,5 +47,9 @@ export class LoginComponent {
         loginForm.value.password
       );
     }
+  }
+
+  ngOnDestroy(): void {
+    this.authStatusSub.unsubscribe();
   }
 }
