@@ -51,9 +51,11 @@ export class PostCreateComponent {
   ) {}
 
   ngOnInit() {
-    this.authService.getAuthStatusListener().subscribe((authStatus) => {
-      this.isLoading = false;
-    });
+    this.authStatusSub = this.authService
+      .getAuthStatusListener()
+      .subscribe((authStatus) => {
+        this.isLoading = false;
+      });
     this.form = new FormGroup({
       title: new FormControl('', {
         validators: [Validators.required, Validators.minLength(3)],
@@ -127,7 +129,7 @@ export class PostCreateComponent {
     reader.readAsDataURL(file);
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.authStatusSub.unsubscribe();
   }
 }
