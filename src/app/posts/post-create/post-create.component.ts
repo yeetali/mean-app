@@ -16,6 +16,8 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from '../post.model';
 import { NgIf } from '@angular/common';
 import { mimeType } from './mime-type.validator';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-post-create',
@@ -40,13 +42,18 @@ export class PostCreateComponent {
   isLoading = false;
   private mode = 'create';
   private postId: string;
+  private authStatusSub: Subscription;
 
   constructor(
     private postsService: PostsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    this.authService.getAuthStatusListener().subscribe((authStatus) => {
+      this.isLoading = false;
+    });
     this.form = new FormGroup({
       title: new FormControl('', {
         validators: [Validators.required, Validators.minLength(3)],
@@ -118,5 +125,9 @@ export class PostCreateComponent {
       this.imagePreview = reader.result as string;
     };
     reader.readAsDataURL(file);
+  }
+
+  ngOnDestroy(): void {
+    this.authStatusSub.unsubscribe();
   }
 }

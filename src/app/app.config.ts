@@ -14,6 +14,7 @@ import { AuthInterceptor } from './auth/auth-interceptor';
 import { AuthGuard } from './auth/auth.guard';
 import { IMAGE_CONFIG } from '@angular/common';
 import { ErrorInterceptor } from './error.interceptor';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 
 export const appConfig: ApplicationConfig = {
   providers: [

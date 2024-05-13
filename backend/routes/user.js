@@ -20,7 +20,7 @@ router.post('/signup', (req, res, next)=> {
         })
         .catch(err => {
             res.status(500).json({
-                error: err
+                message: 'User with this email was already created!'
             })
         })
     })
@@ -31,8 +31,8 @@ router.post('/login', (req, res, next)=>{
     User.findOne({email: req.body.email})
     .then(user => {
         if(!user) {
-            return res.status(404).json({
-                message: 'Auth Failed!'
+            return res.status(401).json({
+                message: 'User with this email does not exist'
             })
         }
         fetchedUser = user
@@ -41,24 +41,20 @@ router.post('/login', (req, res, next)=>{
     .then(result => {
         if(!result) {
             return res.status(404).json({
-                message: 'Auth Failed!'
+                message: 'Invalid password'
             })
         }
-        const token = jwt.sign({
-            email: fetchedUser.email, userId: fetchedUser._id}, 
-            'secret_this_should_be_longer', 
-            {expiresIn: '1h'})
-        res.status(200).json({
-            token: token,
-            expiresIn: 3600,
-            userId: fetchedUser._id
-        })
+            const token = jwt.sign({
+                email: fetchedUser.email, userId: fetchedUser._id}, 
+                'secret_this_should_be_longer', 
+                {expiresIn: '1h'})
+                console.log(token)
+            res.status(200).json({
+                token: token,
+                expiresIn: 3600,
+                userId: fetchedUser._id
+            })
     })
-    .catch(err => {
-        return res.status(401).json({
-            message: 'Auth Failed!'
-        })
     })
-})
 
 module.exports = router;
